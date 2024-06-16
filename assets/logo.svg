@@ -1,0 +1,10 @@
+<svg width="200" height="200" viewBox="0 0 200 200"
+  xmlns="http://www.w3.org/2000/svg">
+  <!-- Vue Logo -->
+  <polygon fill="#42b883" points="100,10 10,190 190,190"/>
+  <polygon fill="#35495e" points="100,30 30,170 170,170"/>
+  <polygon fill="#42b883" points="100,50 50,150 150,150"/>
+
+  <!-- CodeMirror Icon (a simple representation) -->
+  <text x="100" y="140" font-family="Arial, Helvetica, sans-serif" font-size="40" fill="#ffffff" text-anchor="middle" alignment-baseline="middle">{"{}"}</text>
+</svg>
