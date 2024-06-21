@@ -1,17 +1,22 @@
+import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
 
 const RemoveComponent = defineComponent({
   name: 'RemoveComponent',
   props: {
-    // removeComponent: () => {},
-    // onRemove: () => {},
+    onRemove: {
+      type: Function as PropType<() => void>,
+      default: () => {},
+    },
   },
-  setup() {
+  setup(props) {
     const removeRef = ref()
+    const { onRemove } = props
     return () => (
       <span
         ref={removeRef}
         class="cursor-pointer"
+        onClick={onRemove}
       >
         x
       </span>
