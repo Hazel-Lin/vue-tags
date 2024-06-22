@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import VueTags from '../src/components/VueTags'
 import type { Tag } from '../src/types'
 
-const tags = ref(
+const tags = ref<Tag[]>(
   [
     {
       name: 'test',
@@ -24,18 +24,23 @@ function handleDelete(index: number) {
 function handleDeleteAll() {
   tags.value = []
 }
+function handleChangeTag(index: number, value: string) {
+  tags.value[index].name = value
+}
 </script>
 
 <template>
   <div flex justify-center m-auto h-100vh w-100vw mt-10>
     <div text-center>
       <h1>Vue Tags Example</h1>
+      {{ tags }}
       <VueTags
         :tags="tags"
         :handle-addition="handleAddition"
         :handle-delete="handleDelete"
         :handle-clear-all="handleDeleteAll"
         allow-addition-from-paste
+        :handle-change-tag="handleChangeTag"
       />
     </div>
   </div>

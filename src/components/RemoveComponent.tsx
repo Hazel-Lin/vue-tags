@@ -5,7 +5,7 @@ const RemoveComponent = defineComponent({
   name: 'RemoveComponent',
   props: {
     onRemove: {
-      type: Function as PropType<() => void>,
+      type: Function as PropType<(event: MouseEvent) => void>,
       default: () => {},
     },
   },

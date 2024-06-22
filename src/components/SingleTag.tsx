@@ -15,6 +15,10 @@ const SingleTag = defineComponent({
       required: true,
     },
     onDelete: {
+      type: Function as PropType<(event: MouseEvent) => void>,
+      required: true,
+    },
+    onTagClicked: {
       type: Function as PropType<() => void>,
       required: true,
     },
@@ -27,6 +31,7 @@ const SingleTag = defineComponent({
       <div
         ref={tagRef.value}
         class="ml-2 bg-blue-400 text-white px-1.5 py-2 rounded"
+        onClick={props.onTagClicked}
       >
         <span class="mr-2">{name.value}</span>
         <RemoveComponent onRemove={props.onDelete} />
