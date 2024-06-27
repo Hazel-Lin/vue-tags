@@ -1,5 +1,6 @@
 import type { PropType } from 'vue'
 import { defineComponent, nextTick, ref } from 'vue'
+import { VueDraggable } from 'vue-draggable-plus'
 import type { Tag } from '../types/vueTags'
 import SingleTag from './SingleTag'
 
@@ -46,12 +47,17 @@ const VueTags = defineComponent({
       type: Object as PropType<Record<string, string>>,
       default: () => ({}),
     },
+    maxTags: {
+      type: Number as PropType<number>,
+      default: -1,
+    },
   },
   setup(props) {
     const {
       allowAdditionFromPaste,
       placeholder,
       handleClearAll,
+      maxTags,
     } = props
     const tags = ref(props.tags)
     const inputText = ref()
@@ -69,7 +75,9 @@ const VueTags = defineComponent({
       const newTag: Tag = { id: String(tags.value.length + 1), name: value }
 
       isExist.value = tags.value.some((tag: Tag) => tag.name === value)
-      !isExist.value && (tags.value.push(newTag) && (inputText.value = ''))
+
+      // 不存在重复的标签 且 没有达到最大标签数
+      !hasMaxTags() && !isExist.value && (tags.value.push(newTag) && (inputText.value = ''))
     }
     /**
      * @description 删除标签
@@ -90,6 +98,10 @@ const VueTags = defineComponent({
     }
     const handleChange = (event: Event) => {
       const value = (event.target as HTMLInputElement).value
+      // 避免 newText 和 inputText 互相影响
+      if (!newText.value) {
+        inputText.value = value
+      }
 
       if (props.handleInputChange) {
         props.handleInputChange(value, event)
@@ -135,9 +147,16 @@ const VueTags = defineComponent({
         newText.value = text
       })
     }
+    function hasMaxTags() {
+      if (maxTags === -1) {
+        return false
+      }
+      return tags.value.length >= maxTags
+    }
+    const el = ref()
     return () => (
       <div>
-        <div class="flex">
+        <VueDraggable class="flex" ref={el} v-model={tags.value}>
           {tags.value.map((tag: Tag, index: number) => (
             <div>
               {currentEditIndex.value === index
@@ -164,8 +183,7 @@ const VueTags = defineComponent({
                   )}
             </div>
           ))}
-
-        </div>
+        </VueDraggable>
         <div class="mt-2 flex">
           <input
             class="h-8"

@@ -41,6 +41,7 @@ function handleChangeTag(index: number, value: string) {
         :handle-clear-all="handleDeleteAll"
         allow-addition-from-paste
         :handle-change-tag="handleChangeTag"
+        :max-tags="4"
       />
     </div>
   </div>
