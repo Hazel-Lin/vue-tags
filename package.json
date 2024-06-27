@@ -12,12 +12,13 @@
   },
   "keywords": [
     "vue3",
-    "codemirror",
-    "merge",
-    "code comparison",
     "vue",
-    "vue-codemirror",
-    "merge view"
+    "draggable",
+    "tags",
+    "tag input",
+    "vue-component",
+    "autosuggest",
+    "editable"
   ],
   "exports": {
     ".": {
@@ -52,30 +53,13 @@
     "vue": "3.x"
   },
   "dependencies": {
-    "@codemirror/merge": "^6.6.1",
-    "codemirror": "^6.0.1",
-    "vue-codemirror": "^6.1.1"
+    "vue-draggable-plus": "^0.5.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.8.0",
-    "@codemirror/lang-cpp": "^6.0.0",
-    "@codemirror/lang-html": "^6.0.0",
-    "@codemirror/lang-java": "^6.0.0",
-    "@codemirror/lang-javascript": "^6.0.0",
-    "@codemirror/lang-json": "^6.0.0",
-    "@codemirror/lang-lezer": "^6.0.0",
-    "@codemirror/lang-markdown": "^6.0.0",
-    "@codemirror/lang-php": "^6.0.0",
-    "@codemirror/lang-python": "^6.0.0",
-    "@codemirror/lang-rust": "^6.0.0",
-    "@codemirror/lang-sql": "^6.0.0",
-    "@codemirror/lang-xml": "^6.0.0",
-    "@codemirror/legacy-modes": "^6.0.0",
-    "@codemirror/theme-one-dark": "^6.0.0",
     "@iconify-json/carbon": "^1.1.34",
     "@types/node": "^20.12.13",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
-    "@vueuse/core": "^10.10.0",
     "bumpp": "^9.4.1",
     "eslint": "^8.57.0",
     "lint-staged": "^15.2.5",
