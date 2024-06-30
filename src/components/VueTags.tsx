@@ -1,11 +1,15 @@
 import type { PropType } from 'vue'
 import { defineComponent, nextTick, ref } from 'vue'
-import { VueDraggable } from 'vue-draggable-plus'
+import { type UseDraggableReturn, VueDraggable, useDraggable } from 'vue-draggable-plus'
 import type { Tag } from '../types/vueTags'
 import SingleTag from './SingleTag'
 
 const VueTags = defineComponent({
   name: 'VueTags',
+  components: {
+    SingleTag,
+    VueDraggable,
+  },
   props: {
     tags: {
       type: Array as PropType<Tag[]>,
@@ -154,11 +158,19 @@ const VueTags = defineComponent({
       return tags.value.length >= maxTags
     }
     const el = ref()
+    const list = ref(tags)
+    useDraggable(el, list, {
+      animation: 150,
+    })
     return () => (
       <div>
-        <VueDraggable class="flex" ref={el} v-model={tags.value}>
+        <div
+          ref={el}
+          class="flex"
+        >
+
           {tags.value.map((tag: Tag, index: number) => (
-            <div>
+            <div key={tag.id}>
               {currentEditIndex.value === index
                 ? (
                   <input
@@ -183,7 +195,8 @@ const VueTags = defineComponent({
                   )}
             </div>
           ))}
-        </VueDraggable>
+
+        </div>
         <div class="mt-2 flex">
           <input
             class="h-8"

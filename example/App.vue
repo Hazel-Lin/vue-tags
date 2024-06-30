@@ -6,12 +6,20 @@ import type { Tag } from '../src/types'
 const tags = ref<Tag[]>(
   [
     {
-      name: 'test',
+      name: '1',
       id: '1',
     },
     {
-      name: 'test2',
+      name: '2',
       id: '2',
+    },
+    {
+      name: '3',
+      id: '3',
+    },
+    {
+      name: '4',
+      id: '4',
     },
   ],
 )
