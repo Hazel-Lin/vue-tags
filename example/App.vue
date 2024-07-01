@@ -35,6 +35,9 @@ function handleDeleteAll() {
 function handleChangeTag(index: number, value: string) {
   tags.value[index].name = value
 }
+function handleDrag(newTags: Tag[]) {
+  tags.value = newTags
+}
 </script>
 
 <template>
@@ -47,9 +50,11 @@ function handleChangeTag(index: number, value: string) {
         :handle-addition="handleAddition"
         :handle-delete="handleDelete"
         :handle-clear-all="handleDeleteAll"
-        allow-addition-from-paste
         :handle-change-tag="handleChangeTag"
-        :max-tags="4"
+        :handle-drag="handleDrag"
+        :max-tags="7"
+        allow-addition-from-paste
+        allow-drag
       />
     </div>
   </div>

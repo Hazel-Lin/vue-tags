@@ -1,6 +1,6 @@
 import type { PropType } from 'vue'
 import { defineComponent, nextTick, ref } from 'vue'
-import { type UseDraggableReturn, VueDraggable, useDraggable } from 'vue-draggable-plus'
+import { VueDraggable, useDraggable } from 'vue-draggable-plus'
 import type { Tag } from '../types/vueTags'
 import SingleTag from './SingleTag'
 
@@ -47,6 +47,10 @@ const VueTags = defineComponent({
       type: Function as PropType<(value: string, event: FocusEvent) => void>,
       default: () => {},
     },
+    handleDrag: {
+      type: Function as PropType<(tags: Tag[]) => void>,
+      default: () => {},
+    },
     classNames: {
       type: Object as PropType<Record<string, string>>,
       default: () => ({}),
@@ -55,13 +59,18 @@ const VueTags = defineComponent({
       type: Number as PropType<number>,
       default: -1,
     },
+    allowDrag: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
   },
   setup(props) {
     const {
       allowAdditionFromPaste,
       placeholder,
-      handleClearAll,
       maxTags,
+      allowDrag,
+      handleClearAll,
     } = props
     const tags = ref(props.tags)
     const inputText = ref()
@@ -158,10 +167,14 @@ const VueTags = defineComponent({
       return tags.value.length >= maxTags
     }
     const el = ref()
-    const list = ref(tags)
-    useDraggable(el, list, {
-      animation: 150,
-    })
+    if (allowDrag) {
+      useDraggable(el, tags, {
+        animation: 150,
+        onUpdate() {
+          props?.handleDrag(tags.value)
+        },
+      })
+    }
     return () => (
       <div>
         <div
@@ -191,6 +204,7 @@ const VueTags = defineComponent({
                     name={tag.name}
                     onDelete={(event: MouseEvent) => handleDeleteTag(index, event)}
                     onTagClicked={() => handleClickTag(index, tag.name)}
+                    class={allowDrag && 'cursor-move'}
                   />
                   )}
             </div>
