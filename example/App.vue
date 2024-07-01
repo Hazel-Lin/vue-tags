@@ -53,8 +53,10 @@ function handleDrag(newTags: Tag[]) {
         :handle-change-tag="handleChangeTag"
         :handle-drag="handleDrag"
         :max-tags="7"
+        input-field-position="inline"
         allow-addition-from-paste
         allow-drag
+        editable
       />
     </div>
   </div>

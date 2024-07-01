@@ -2,6 +2,7 @@ import type { PropType } from 'vue'
 import { defineComponent, nextTick, ref } from 'vue'
 import { VueDraggable, useDraggable } from 'vue-draggable-plus'
 import type { Tag } from '../types/vueTags'
+import { INPUT_FIELD_POSITIONS } from '../common/constants'
 import SingleTag from './SingleTag'
 
 const VueTags = defineComponent({
@@ -63,6 +64,15 @@ const VueTags = defineComponent({
       type: Boolean as PropType<boolean>,
       default: false,
     },
+    // 是否可编辑
+    editable: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    inputFieldPosition: {
+      type: String as PropType<'top' | 'bottom' | 'inline'>,
+      default: 'bottom',
+    },
   },
   setup(props) {
     const {
@@ -70,6 +80,8 @@ const VueTags = defineComponent({
       placeholder,
       maxTags,
       allowDrag,
+      editable,
+      inputFieldPosition,
       handleClearAll,
     } = props
     const tags = ref(props.tags)
@@ -175,65 +187,72 @@ const VueTags = defineComponent({
         },
       })
     }
+    // 输入框组件
+    const inputComponent = () => (
+      <div class="flex">
+        <input
+          class="h-8"
+          ref={inputRef.value}
+          type="text"
+          value={inputText.value}
+          placeholder={placeholder}
+          onChange={handleChange}
+          onKeydown={handleKeyDown}
+          onBlur={handleBlur}
+          onPaste={handlePaste}
+          data-automation="input"
+        />
+        {tags.value.length > 0 && (
+          <button
+            onClick={handleClick}
+            class={clearAllClass}
+          >
+            一键清空
+          </button>
+        )}
+      </div>
+    )
+
     return () => (
-      <div>
-        <div
-          ref={el}
-          class="flex"
-        >
-
-          {tags.value.map((tag: Tag, index: number) => (
-            <div key={tag.id}>
-              {currentEditIndex.value === index
-                ? (
-                  <input
-                    ref={tagInputRef}
-                    class="h-8"
-                    type="text"
-                    value={newText.value}
-                    onChange={handleChange}
-                    onKeydown={handleKeyDown}
-                    onBlur={handleBlur}
-                    onPaste={handlePaste}
-                  />
-                  )
-                : (
-                  <SingleTag
-                    key={tag.id}
-                    id={tag.id}
-                    name={tag.name}
-                    onDelete={(event: MouseEvent) => handleDeleteTag(index, event)}
-                    onTagClicked={() => handleClickTag(index, tag.name)}
-                    class={allowDrag && 'cursor-move'}
-                  />
-                  )}
-            </div>
-          ))}
-
+      <div class="grid gap-sm">
+        {inputFieldPosition === INPUT_FIELD_POSITIONS.TOP && inputComponent()}
+        <div class="flex">
+          <div
+            ref={el}
+            class="flex"
+          >
+            {tags.value.map((tag: Tag, index: number) => (
+              <div key={tag.id}>
+                {currentEditIndex.value === index && editable
+                  ? (
+                    <input
+                      ref={tagInputRef}
+                      class="h-8"
+                      type="text"
+                      value={newText.value}
+                      onChange={handleChange}
+                      onKeydown={handleKeyDown}
+                      onBlur={handleBlur}
+                      onPaste={handlePaste}
+                    />
+                    )
+                  : (
+                    <SingleTag
+                      key={tag.id}
+                      id={tag.id}
+                      name={tag.name}
+                      onDelete={(event: MouseEvent) => handleDeleteTag(index, event)}
+                      onTagClicked={() => handleClickTag(index, tag.name)}
+                      class={allowDrag && 'cursor-move'}
+                    />
+                    )}
+              </div>
+            ))}
+          </div>
+          {inputFieldPosition === INPUT_FIELD_POSITIONS.INLINE && inputComponent()}
         </div>
-        <div class="mt-2 flex">
-          <input
-            class="h-8"
-            ref={inputRef.value}
-            type="text"
-            value={inputText.value}
-            placeholder={placeholder}
-            onChange={handleChange}
-            onKeydown={handleKeyDown}
-            onBlur={handleBlur}
-            onPaste={handlePaste}
-            data-automation="input"
-          />
-          { tags.value.length > 0 && (
-            <button
-              onClick={handleClick}
-              class={clearAllClass}
-            >
-              一键清空
-            </button>
-          )}
 
-        </div>
+        {inputFieldPosition === INPUT_FIELD_POSITIONS.BOTTOM && inputComponent()}
       </div>
     )
   },
