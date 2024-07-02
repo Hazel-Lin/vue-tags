@@ -1,16 +1,14 @@
 import type { PropType } from 'vue'
 import { defineComponent, nextTick, ref } from 'vue'
-import { VueDraggable, useDraggable } from 'vue-draggable-plus'
+import { useDraggable } from 'vue-draggable-plus'
 import type { Tag } from '../types/vueTags'
 import { INPUT_FIELD_POSITIONS } from '../common/constants'
 import SingleTag from './SingleTag'
 
+const name = 'VUE_TAGS'
+
 const VueTags = defineComponent({
-  name: 'VueTags',
-  components: {
-    SingleTag,
-    VueDraggable,
-  },
+  name,
   props: {
     tags: {
       type: Array as PropType<Tag[]>,
@@ -73,6 +71,22 @@ const VueTags = defineComponent({
       type: String as PropType<'top' | 'bottom' | 'inline'>,
       default: 'bottom',
     },
+    readOnly: {
+      type: Boolean as PropType<boolean>,
+      default: false,
+    },
+    allowUnique: {
+      type: Boolean as PropType<boolean>,
+      default: true,
+    },
+    clearAllText: {
+      type: String as PropType<string>,
+      default: '一键清空',
+    },
+    clearAll: {
+      type: Boolean as PropType<boolean>,
+      default: true,
+    },
   },
   setup(props) {
     const {
@@ -82,27 +96,36 @@ const VueTags = defineComponent({
       allowDrag,
       editable,
       inputFieldPosition,
+      allowUnique,
+      readOnly,
+      tags,
+      clearAllText,
+      clearAll,
       handleClearAll,
+      handleDelete,
+      handleInputChange,
+      handleInputBlur,
     } = props
-    const tags = ref(props.tags)
+    const tagList = ref(tags)
     const inputText = ref()
     const newText = ref()
     const currentEditIndex = ref(-1)
     const inputRef = ref()
     const tagInputRef = ref()
-
     const isExist = ref(false)
 
     // TODO 优化 可以自定义类名
     const clearAllClass = 'cursor-pointer p-2.5 bg-red-500 text-white rounded border-none ml-2'
 
     const onAdd = (value: string) => {
-      const newTag: Tag = { id: String(tags.value.length + 1), name: value }
-
-      isExist.value = tags.value.some((tag: Tag) => tag.name === value)
+      const newTag: Tag = { id: String(tagList.value.length + 1), name: value }
+      // 是否存在重复的标签 allowUnique
+      if (!allowUnique) {
+        isExist.value = tagList.value.some((tag: Tag) => tag.name === value)
+      }
 
       // 不存在重复的标签 且 没有达到最大标签数
-      !hasMaxTags() && !isExist.value && (tags.value.push(newTag) && (inputText.value = ''))
+      !hasMaxTags() && !isExist.value && (tagList.value.push(newTag) && (inputText.value = ''))
     }
     /**
      * @description 删除标签
@@ -113,12 +136,12 @@ const VueTags = defineComponent({
       event.preventDefault()
       event.stopPropagation()
 
-      props?.handleDelete?.(index, event)
-      tags.value.splice(index, 1)
+      handleDelete?.(index, event)
+      tagList.value.splice(index, 1)
     }
     function handleClick() {
       handleClearAll?.()
-      tags.value = []
+      tagList.value = []
       inputText.value = ''
     }
     const handleChange = (event: Event) => {
@@ -128,8 +151,8 @@ const VueTags = defineComponent({
         inputText.value = value
       }
 
-      if (props.handleInputChange) {
-        props.handleInputChange(value, event)
+      if (handleInputChange) {
+        handleInputChange(value, event)
       }
     }
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -143,8 +166,8 @@ const VueTags = defineComponent({
     }
     const handleBlur = (event: FocusEvent) => {
       const value = (event.target as HTMLInputElement).value
-      if (props.handleInputBlur) {
-        props.handleInputBlur(value, event)
+      if (handleInputBlur) {
+        handleInputBlur(value, event)
       }
       currentEditIndex.value = -1
     }
@@ -176,14 +199,14 @@ const VueTags = defineComponent({
       if (maxTags === -1) {
         return false
       }
-      return tags.value.length >= maxTags
+      return tagList.value.length >= maxTags
     }
     const el = ref()
     if (allowDrag) {
-      useDraggable(el, tags, {
+      useDraggable(el, tagList, {
         animation: 150,
         onUpdate() {
-          props?.handleDrag(tags.value)
+          props?.handleDrag(tagList.value)
         },
       })
     }
@@ -202,12 +225,12 @@ const VueTags = defineComponent({
           onPaste={handlePaste}
           data-automation="input"
         />
-        {tags.value.length > 0 && (
+        {clearAll && tagList.value.length > 0 && (
           <button
             onClick={handleClick}
             class={clearAllClass}
           >
-            一键清空
+            {clearAllText}
           </button>
         )}
       </div>
@@ -215,13 +238,13 @@ const VueTags = defineComponent({
 
     return () => (
       <div class="grid gap-sm">
-        {inputFieldPosition === INPUT_FIELD_POSITIONS.TOP && inputComponent()}
-        <div class="flex">
+        {readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.TOP && inputComponent()}
+        <div class="flex gap-2">
           <div
             ref={el}
             class="flex"
           >
-            {tags.value.map((tag: Tag, index: number) => (
+            {tagList.value.map((tag: Tag, index: number) => (
               <div key={tag.id}>
                 {currentEditIndex.value === index && editable
                   ? (
@@ -249,10 +272,10 @@ const VueTags = defineComponent({
               </div>
             ))}
           </div>
-          {inputFieldPosition === INPUT_FIELD_POSITIONS.INLINE && inputComponent()}
+          {readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.INLINE && inputComponent()}
         </div>
 
-        {inputFieldPosition === INPUT_FIELD_POSITIONS.BOTTOM && inputComponent()}
+        {readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.BOTTOM && inputComponent()}
       </div>
     )
   },

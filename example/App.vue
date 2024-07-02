@@ -44,7 +44,6 @@ function handleDrag(newTags: Tag[]) {
   <div flex justify-center m-auto h-100vh w-100vw mt-10>
     <div text-center>
       <h1>Vue Tags Example</h1>
-      {{ tags }}
       <VueTags
         :tags="tags"
         :handle-addition="handleAddition"
@@ -57,6 +56,11 @@ function handleDrag(newTags: Tag[]) {
         allow-addition-from-paste
         allow-drag
         editable
+        placeholder="添加一个标签 🏷"
+        read-only
+        allow-unique
+        clear-all
+        clear-all-text="清空所有"
       />
     </div>
   </div>
