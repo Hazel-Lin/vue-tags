@@ -4,6 +4,7 @@ import { useDraggable } from 'vue-draggable-plus'
 import type { Tag } from '../types/vueTags'
 import { INPUT_FIELD_POSITIONS } from '../common/constants'
 import SingleTag from './SingleTag'
+import { hasEditItem } from '@/utils'
 
 const name = 'VUE_TAGS'
 
@@ -118,11 +119,12 @@ const VueTags = defineComponent({
     const clearAllClass = 'cursor-pointer p-2.5 bg-red-500 text-white rounded border-none ml-2'
 
     const onAdd = (value: string) => {
-      const newTag: Tag = { id: String(tagList.value.length + 1), name: value }
       // 是否存在重复的标签 allowUnique
       if (!allowUnique) {
         isExist.value = tagList.value.some((tag: Tag) => tag.name === value)
       }
+
+      const newTag: Tag = { id: String(tagList.value.length + 1), name: value }
 
       // 不存在重复的标签 且 没有达到最大标签数
       !hasMaxTags() && !isExist.value && (tagList.value.push(newTag) && (inputText.value = ''))
@@ -139,7 +141,8 @@ const VueTags = defineComponent({
       handleDelete?.(index, event)
       tagList.value.splice(index, 1)
     }
-    function handleClick() {
+
+    function handleClickClearAll() {
       handleClearAll?.()
       tagList.value = []
       inputText.value = ''
@@ -157,9 +160,12 @@ const VueTags = defineComponent({
     }
     const handleKeyDown = (event: KeyboardEvent) => {
       const value = (event.target as HTMLInputElement).value
-      if (event.key === 'Enter') {
-        if (value) {
-          currentEditIndex.value !== -1 ? props?.handleChangeTag?.(currentEditIndex.value, value) : onAdd(value)
+      if (event.key === 'Enter' && value) {
+        if (hasEditItem(currentEditIndex.value)) {
+          props?.handleChangeTag?.(currentEditIndex.value, value)
+        }
+        else {
+          onAdd(value)
         }
         currentEditIndex.value = -1
       }
@@ -183,7 +189,7 @@ const VueTags = defineComponent({
       const clipboardText = clipboardData.getData('text')
       if (clipboardText) {
         inputText.value = ''
-        currentEditIndex.value !== -1 ? props?.handleChangeTag?.(currentEditIndex.value, clipboardText) : onAdd(clipboardText)
+        hasEditItem(currentEditIndex.value) ? props?.handleChangeTag?.(currentEditIndex.value, clipboardText) : onAdd(clipboardText)
       }
       currentEditIndex.value = -1
     }
@@ -196,7 +202,7 @@ const VueTags = defineComponent({
       })
     }
     function hasMaxTags() {
-      if (maxTags === -1) {
+      if (!hasEditItem(maxTags)) {
         return false
       }
       return tagList.value.length >= maxTags
@@ -227,7 +233,7 @@ const VueTags = defineComponent({
         />
         {clearAll && tagList.value.length > 0 && (
           <button
-            onClick={handleClick}
+            onClick={handleClickClearAll}
             class={clearAllClass}
           >
             {clearAllText}
