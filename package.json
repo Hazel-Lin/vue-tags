@@ -54,6 +54,9 @@
     "vue": "3.x"
   },
   "dependencies": {
+    "@testing-library/vue": "^8.1.0",
+    "@vue/compiler-sfc": "^3.4.31",
+    "@vue/test-utils": "^2.4.6",
     "vue-draggable-plus": "^0.5.0"
   },
   "devDependencies": {
