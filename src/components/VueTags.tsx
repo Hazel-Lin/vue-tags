@@ -230,6 +230,7 @@ const VueTags = defineComponent({
           onBlur={handleBlur}
           onPaste={handlePaste}
           data-automation="input"
+          data-testid="input"
         />
         {clearAll && tagList.value.length > 0 && (
           <button
@@ -244,7 +245,7 @@ const VueTags = defineComponent({
 
     return () => (
       <div class="grid gap-sm">
-        {readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.TOP && inputComponent()}
+        {!readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.TOP && inputComponent()}
         <div class="flex gap-2">
           <div
             ref={el}
@@ -252,7 +253,7 @@ const VueTags = defineComponent({
           >
             {tagList.value.map((tag: Tag, index: number) => (
               <div key={tag.id}>
-                {currentEditIndex.value === index && editable
+                {currentEditIndex.value === index && editable && !readOnly
                   ? (
                     <input
                       ref={tagInputRef}
@@ -263,6 +264,7 @@ const VueTags = defineComponent({
                       onKeydown={handleKeyDown}
                       onBlur={handleBlur}
                       onPaste={handlePaste}
+                      data-testid="tag-edit"
                     />
                     )
                   : (
@@ -278,10 +280,10 @@ const VueTags = defineComponent({
               </div>
             ))}
           </div>
-          {readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.INLINE && inputComponent()}
+          {!readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.INLINE && inputComponent()}
         </div>
 
-        {readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.BOTTOM && inputComponent()}
+        {!readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.BOTTOM && inputComponent()}
       </div>
     )
   },
