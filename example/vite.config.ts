@@ -7,8 +7,7 @@ export default defineConfig({
   plugins: [vue(), Uno()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
-      'vue-codemirror-merge-view': resolve(__dirname, '../src'),
+      '@': resolve(__dirname, '../src'),
     },
   },
   esbuild: {
