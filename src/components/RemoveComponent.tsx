@@ -17,6 +17,7 @@ const RemoveComponent = defineComponent({
         ref={removeRef}
         class="cursor-pointer"
         onClick={onRemove}
+        data-testid="tag-delete"
       >
         x
       </span>

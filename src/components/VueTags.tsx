@@ -208,7 +208,7 @@ const VueTags = defineComponent({
       return tagList.value.length >= maxTags
     }
     const el = ref()
-    if (allowDrag) {
+    if (allowDrag && !readOnly) {
       useDraggable(el, tagList, {
         animation: 150,
         onUpdate() {
@@ -274,7 +274,9 @@ const VueTags = defineComponent({
                       name={tag.name}
                       onDelete={(event: MouseEvent) => handleDeleteTag(index, event)}
                       onTagClicked={() => handleClickTag(index, tag.name)}
-                      class={allowDrag && 'cursor-move'}
+                      class={(allowDrag && !readOnly) && 'cursor-move'}
+                      readOnly={readOnly}
+                      data-testid="single-tag"
                     />
                     )}
               </div>

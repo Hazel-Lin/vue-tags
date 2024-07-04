@@ -14,6 +14,10 @@ const SingleTag = defineComponent({
       type: String,
       required: true,
     },
+    readOnly: {
+      type: Boolean,
+      default: false,
+    },
     onDelete: {
       type: Function as PropType<(event: MouseEvent) => void>,
       required: true,
@@ -32,9 +36,10 @@ const SingleTag = defineComponent({
         ref={tagRef.value}
         class="ml-2 bg-blue-400 text-white px-1.5 py-2 rounded"
         onClick={props.onTagClicked}
+        data-testid="tag"
       >
-        <span class="mr-2">{name.value}</span>
-        <RemoveComponent onRemove={props.onDelete} />
+        <span>{name.value}</span>
+        {!props.readOnly && <RemoveComponent onRemove={props.onDelete} />}
       </div>
     )
   },
