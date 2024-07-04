@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/vue'
+import { mount } from '@vue/test-utils'
 import type { Tag } from '../types/vueTags'
 import VueTags from '../components/VueTags'
 
@@ -49,6 +49,35 @@ describe('test VueTags', () => {
       // 点击某一个 tag 后，编辑框不存在
       await fireEvent.click(container.getByText('Thailand'))
       expect(container.queryByTestId('tag-edit')).toBeNull()
+    })
+    it('should not delete tag', () => {
+      const container = render(VueTags, {
+        props: {
+          tags: sampleTags,
+          readOnly: true,
+        },
+      })
+      // 删除按钮不存在
+      expect(container.queryByTestId('tag-delete')).toBeNull()
+    })
+    it('should not drag tag', async () => {
+      const { getByText, container } = render(VueTags, {
+        props: {
+          tags: sampleTags,
+          readOnly: true,
+          allowDrag: true,
+        },
+      })
+      // 不存在这个样式
+      expect(container.querySelectorAll('.cursor-move').length).toEqual(0)
+      const dest = getByText('Thailand')
+
+      // TODO 模拟拖拽
+      await fireEvent.dragStart(dest)
+      await fireEvent.dragEnter(dest)
+      await fireEvent.dragOver(dest)
+      await fireEvent.drop(dest)
+      await fireEvent.dragEnd(dest)
     })
   })
 
