@@ -1,14 +1,14 @@
 {
-  "name": "vue-codemirror-merge",
+  "name": "vue-tags",
   "type": "module",
   "version": "0.1.0",
   "packageManager": "pnpm@9.1.4",
-  "description": "A Vue wrapper for CodeMirror with merge view functionality",
+  "description": "A simple tagging component for your projects",
   "author": "Hazel-Lin",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hazel-Lin/vue-codemirror-merge"
+    "url": "git+https://github.com/Hazel-Lin/vue-tags.git"
   },
   "keywords": [
     "vue3",
