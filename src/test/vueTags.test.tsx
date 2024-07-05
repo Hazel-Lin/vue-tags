@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/vue'
-import { mount } from '@vue/test-utils'
 import type { Tag } from '../types/vueTags'
 import VueTags from '../components/VueTags'
 
@@ -10,7 +9,7 @@ describe('test VueTags', () => {
     { id: '2', name: 'India' },
   ]
 
-  it.skip('should render correctly', () => {
+  it('should render correctly', () => {
     const { getByText } = render(VueTags, {
       props: {
         tags: sampleTags,
@@ -28,7 +27,7 @@ describe('test VueTags', () => {
   })
 
   describe('when readOnly is true', () => {
-    it.skip('should not render input', () => {
+    it('should not render input', () => {
       const container = render(VueTags, {
         props: {
           tags: sampleTags,
@@ -81,67 +80,73 @@ describe('test VueTags', () => {
     })
   })
 
-  // it('should adds a new tag', async () => {
-  //   const wrapper = mount(VueTags, {
-  //     props: {
-  //       tags: sampleTags,
-  //       handleAddition: vi.fn(),
-  //     },
-  //   })
+  describe('test handle', () => {
+    // 测试回车可添加 tag
+    it('should add a new tag when press enter', async () => {
+      const container = render(VueTags, {
+        props: {
+          tags: sampleTags,
+        },
+      })
+      // 输入框输入 NewTag
+      const input = screen.getByTestId('input')
+      await fireEvent.change(input, { target: { value: 'test' } })
+      // 按下 enter 键
+      await fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
+      // 判断是否添加成功
+      expect(container.getByText('test')).toBeTruthy()
+      const list = [{
+        id: '1',
+        name: 'Thailand',
+      }, {
+        id: '2',
+        name: 'India',
+      }, {
+        id: '3',
+        name: 'test',
+      }]
+      expect(sampleTags).toEqual(list)
+    })
+    // 测试删除 tag
+    it('should delete a tag when click the remove button', async () => {
+      const handleDelete = vi.fn()
+      const tags = [{
+        id: '1',
+        name: 'Thailand',
+      }, {
+        id: '2',
+        name: 'India',
+      }]
+      const container = render(VueTags, {
+        props: {
+          tags,
+          handleDelete,
+        },
+      })
+      const list = [{
+        id: '2',
+        name: 'India',
+      }]
+      const deleteButtons = container.queryAllByTestId('tag-delete')
+      await fireEvent.click(deleteButtons[0])
+      expect(tags).toEqual(list)
+      expect(handleDelete).toHaveBeenCalled()
+    })
+    // 测试清空所有 tag
+    it('should clear all tags when click the clearAll button', async () => {
+      const handleClearAll = vi.fn()
+      const container = render(VueTags, {
+        props: {
+          tags: sampleTags,
+          handleClearAll,
+          clearAll: true,
+        },
+      })
 
-  //   const input = wrapper.find('input[data-automation="input"]')
-  //   await input.setValue('NewTag')
-  //   await input.trigger('keydown.enter')
+      await fireEvent.click(container.getByText('一键清空'))
 
-  //   expect(wrapper.props().handleAddition).toHaveBeenCalled()
-  // })
-
-  // it('deletes a tag', async () => {
-  //   const handleDelete = vi.fn()
-  //   const wrapper = mount(VueTags, {
-  //     props: {
-  //       tags: sampleTags,
-  //       handleDelete,
-  //     },
-  //   })
-
-  //   const deleteButtons = wrapper.findAll('.single-tag .delete-button')
-  //   await deleteButtons[0].trigger('click')
-
-  //   expect(handleDelete).toHaveBeenCalledWith(0, expect.any(MouseEvent))
-  // })
-
-  // it('clears all tags', async () => {
-  //   const handleClearAll = vi.fn()
-  //   const wrapper = mount(VueTags, {
-  //     props: {
-  //       tags: sampleTags,
-  //       handleClearAll,
-  //       clearAll: true,
-  //     },
-  //   })
-
-  //   const clearButton = wrapper.find('button.clear-button')
-  //   await clearButton.trigger('click')
-
-  //   expect(handleClearAll).toHaveBeenCalled()
-  //   expect(wrapper.props().tags).toHaveLength(0)
-  // })
-
-  // it('edits a tag', async () => {
-  //   const handleChangeTag = vi.fn()
-  //   const wrapper = mount(VueTags, {
-  //     props: {
-  //       tags: sampleTags,
-  //       editable: true,
-  //       handleChangeTag,
-  //     },
-  //   })
-
-  //   const editInputs = wrapper.findAll('input.h-8')
-  //   await editInputs[0].setValue('EditedTag')
-  //   await editInputs[0].trigger('blur')
-
-  //   expect(handleChangeTag).toHaveBeenCalledWith(0, 'EditedTag')
-  // })
+      expect(handleClearAll).toHaveBeenCalled()
+      expect(container.queryAllByTestId('single-tag').length).toEqual(0)
+    })
+  })
 })
