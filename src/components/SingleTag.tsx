@@ -36,7 +36,6 @@ const SingleTag = defineComponent({
         ref={tagRef.value}
         class="ml-2 bg-blue-400 text-white px-1.5 py-2 rounded"
         onClick={props.onTagClicked}
-        data-testid="tag"
       >
         <span>{name.value}</span>
         {!props.readOnly && <RemoveComponent onRemove={props.onDelete} />}

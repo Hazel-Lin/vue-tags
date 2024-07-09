@@ -2,9 +2,10 @@ import type { PropType } from 'vue'
 import { defineComponent, nextTick, ref } from 'vue'
 import { useDraggable } from 'vue-draggable-plus'
 import type { Tag } from '../types/vueTags'
-import { INPUT_FIELD_POSITIONS } from '../common/constants'
+import { INPUT_FIELD_POSITIONS, TAG_EDIT_TEST_ID } from '../common/constants'
 import SingleTag from './SingleTag'
 import { hasEditItem } from '@/utils'
+import { CLEAR_ALL_TEXT, ENTER_ARROW_KEY, INPUT_TEST_ID, SINGLE_TAG_TEST_ID } from '@/common/constants'
 
 const name = 'VUE_TAGS'
 
@@ -76,13 +77,13 @@ const VueTags = defineComponent({
       type: Boolean as PropType<boolean>,
       default: false,
     },
-    allowUnique: {
+    allowDuplicate: {
       type: Boolean as PropType<boolean>,
       default: true,
     },
     clearAllText: {
       type: String as PropType<string>,
-      default: '一键清空',
+      default: CLEAR_ALL_TEXT,
     },
     clearAll: {
       type: Boolean as PropType<boolean>,
@@ -97,7 +98,7 @@ const VueTags = defineComponent({
       allowDrag,
       editable,
       inputFieldPosition,
-      allowUnique,
+      allowDuplicate,
       readOnly,
       tags,
       clearAllText,
@@ -117,17 +118,24 @@ const VueTags = defineComponent({
 
     // TODO 优化 可以自定义类名
     const clearAllClass = 'cursor-pointer p-2.5 bg-red-500 text-white rounded border-none ml-2'
-
+    /**
+     * @description 添加标签
+     * @param value 标签名称
+     * 存在重复的标签时根据 allowDuplicate 判断是否添加
+     * 不存在重复的标签时根据 maxTags 判断是否添加
+     */
     const onAdd = (value: string) => {
-      // 是否存在重复的标签 allowUnique
-      if (!allowUnique) {
-        isExist.value = tagList.value.some((tag: Tag) => tag.name === value)
+      if (!value) {
+        return
       }
-
       const newTag: Tag = { id: String(tagList.value.length + 1), name: value }
-
-      // 不存在重复的标签 且 没有达到最大标签数
-      !hasMaxTags() && !isExist.value && (tagList.value.push(newTag) && (inputText.value = ''))
+      if (!hasMaxTags()) {
+        isExist.value = tagList.value.some((tag: Tag) => tag.name === value)
+        if (!allowDuplicate && isExist.value) {
+          return
+        }
+        (tagList.value.push(newTag) && (inputText.value = ''))
+      }
     }
     /**
      * @description 删除标签
@@ -160,7 +168,7 @@ const VueTags = defineComponent({
     }
     const handleKeyDown = (event: KeyboardEvent) => {
       const value = (event.target as HTMLInputElement).value
-      if (event.key === 'Enter' && value) {
+      if (event.key === ENTER_ARROW_KEY && value) {
         if (hasEditItem(currentEditIndex.value)) {
           props?.handleChangeTag?.(currentEditIndex.value, value)
         }
@@ -230,7 +238,7 @@ const VueTags = defineComponent({
           onBlur={handleBlur}
           onPaste={handlePaste}
           data-automation="input"
-          data-testid="input"
+          data-testid={INPUT_TEST_ID}
         />
         {clearAll && tagList.value.length > 0 && (
           <button
@@ -264,7 +272,7 @@ const VueTags = defineComponent({
                       onKeydown={handleKeyDown}
                       onBlur={handleBlur}
                       onPaste={handlePaste}
-                      data-testid="tag-edit"
+                      data-testid={TAG_EDIT_TEST_ID}
                     />
                     )
                   : (
@@ -276,7 +284,7 @@ const VueTags = defineComponent({
                       onTagClicked={() => handleClickTag(index, tag.name)}
                       class={(allowDrag && !readOnly) && 'cursor-move'}
                       readOnly={readOnly}
-                      data-testid="single-tag"
+                      data-testid={SINGLE_TAG_TEST_ID}
                     />
                     )}
               </div>
