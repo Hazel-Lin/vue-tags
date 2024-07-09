@@ -51,14 +51,11 @@ function handleDrag(newTags: Tag[]) {
         :handle-clear-all="handleDeleteAll"
         :handle-change-tag="handleChangeTag"
         :handle-drag="handleDrag"
-        :max-tags="7"
-        input-field-position="inline"
         allow-addition-from-paste
         allow-drag
         editable
         placeholder="添加一个标签 🏷"
-        read-only
-        allow-unique
+        :allow-duplicate="false"
         clear-all
         clear-all-text="清空所有"
       />
