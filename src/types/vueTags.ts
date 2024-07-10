@@ -2,7 +2,7 @@ import type { VNode } from 'vue'
 
 export interface Tag {
   id: string
-  name: string
+  [key: string]: string
 }
 
 export interface VueTagsProps {

@@ -27,6 +27,24 @@ describe('test VueTags', () => {
     expect(getByText(CLEAR_ALL_TEXT)).toBeTruthy()
   })
 
+  it('should render correctly when change the labelField', () => {
+    const tags = [{
+      id: '1',
+      text: 'Thailand',
+    }]
+    const { getByText } = render(VueTags, {
+      props: {
+        tags,
+        labelField: 'text',
+      },
+    })
+
+    expect(getByText('Thailand')).toBeTruthy()
+    expect(screen.getByTestId(INPUT_TEST_ID)).toBeTruthy()
+    expect(screen.getByPlaceholderText('Add new tag')).toBeTruthy()
+    expect(getByText(CLEAR_ALL_TEXT)).toBeTruthy()
+  })
+
   describe('when readOnly is true', () => {
     it('should not render input', () => {
       const container = render(VueTags, {

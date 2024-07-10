@@ -6,23 +6,16 @@ import type { Tag } from '../src/types'
 const tags = ref<Tag[]>(
   [
     {
-      name: '1',
       id: '1',
+      text: 'hazel',
     },
     {
-      name: '2',
       id: '2',
-    },
-    {
-      name: '3',
-      id: '3',
-    },
-    {
-      name: '4',
-      id: '4',
+      text: 'lin',
     },
   ],
 )
+const labelField = 'text'
 function handleAddition(tag: Tag) {
   tags.value = [...tags.value, tag]
 }
@@ -33,7 +26,7 @@ function handleDeleteAll() {
   tags.value = []
 }
 function handleChangeTag(index: number, value: string) {
-  tags.value[index].name = value
+  tags.value[index][labelField] = value
 }
 function handleDrag(newTags: Tag[]) {
   tags.value = newTags
@@ -51,11 +44,11 @@ function handleDrag(newTags: Tag[]) {
         :handle-clear-all="handleDeleteAll"
         :handle-change-tag="handleChangeTag"
         :handle-drag="handleDrag"
+        :label-field="labelField"
         allow-addition-from-paste
         allow-drag
         editable
         placeholder="添加一个标签 🏷"
-        :allow-duplicate="false"
         clear-all
         clear-all-text="清空所有"
       />

@@ -16,6 +16,10 @@ const VueTags = defineComponent({
       type: Array as PropType<Tag[]>,
       required: true,
     },
+    labelField: {
+      type: String as PropType<string>,
+      default: 'name',
+    },
     handleAddition: {
       type: Function,
       default: Function as PropType<(tag: Tag) => void>,
@@ -79,7 +83,7 @@ const VueTags = defineComponent({
     },
     allowDuplicate: {
       type: Boolean as PropType<boolean>,
-      default: true,
+      default: false,
     },
     clearAllText: {
       type: String as PropType<string>,
@@ -115,6 +119,7 @@ const VueTags = defineComponent({
     const inputRef = ref()
     const tagInputRef = ref()
     const isExist = ref(false)
+    const labelField = ref(props.labelField.trim())
 
     // TODO 优化 可以自定义类名
     const clearAllClass = 'cursor-pointer p-2.5 bg-red-500 text-white rounded border-none ml-2'
@@ -128,9 +133,9 @@ const VueTags = defineComponent({
       if (!value) {
         return
       }
-      const newTag: Tag = { id: String(tagList.value.length + 1), name: value }
+      const newTag: Tag = { id: String(tagList.value.length + 1), [labelField.value]: value }
       if (!hasMaxTags()) {
-        isExist.value = tagList.value.some((tag: Tag) => tag.name === value)
+        isExist.value = tagList.value.some((tag: Tag) => tag[labelField.value] === value)
         if (!allowDuplicate && isExist.value) {
           return
         }
@@ -279,9 +284,9 @@ const VueTags = defineComponent({
                     <SingleTag
                       key={tag.id}
                       id={tag.id}
-                      name={tag.name}
+                      name={tag[labelField.value]}
                       onDelete={(event: MouseEvent) => handleDeleteTag(index, event)}
-                      onTagClicked={() => handleClickTag(index, tag.name)}
+                      onTagClicked={() => handleClickTag(index, tag[labelField.value])}
                       class={(allowDrag && !readOnly) && 'cursor-move'}
                       readOnly={readOnly}
                       data-testid={SINGLE_TAG_TEST_ID}
