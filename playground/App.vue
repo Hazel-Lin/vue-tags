@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import VueTags from '../src/components/VueTags'
+import { VueTags } from '../src/index'
 import type { Tag } from '../src/types'
 
 const tags = ref<Tag[]>(
