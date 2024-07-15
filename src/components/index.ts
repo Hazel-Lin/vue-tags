@@ -1,3 +1,3 @@
-import VueTags from './VueTags.tsx'
+import VueTags from './VueTags'
 
 export default VueTags
