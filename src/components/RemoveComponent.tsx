@@ -16,7 +16,7 @@ const RemoveComponent = defineComponent({
     return () => (
       <span
         ref={removeRef}
-        class="cursor-pointer"
+        class="cursor-pointer ml-2"
         onClick={onRemove}
         data-testid={TAG_DELETE_TEST_ID}
       >
