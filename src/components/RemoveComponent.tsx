@@ -16,7 +16,7 @@ const RemoveComponent = defineComponent({
     return () => (
       <span
         ref={removeRef}
-        class="cursor-pointer ml-2"
+        class="cursor-pointer ml-2 vue-tags__remove"
         onClick={onRemove}
         data-testid={TAG_DELETE_TEST_ID}
       >

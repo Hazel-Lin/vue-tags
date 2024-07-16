@@ -34,7 +34,7 @@ const SingleTag = defineComponent({
     return () => (
       <div
         ref={tagRef.value}
-        class="ml-2 bg-blue-400 text-white px-1.5 py-2 rounded"
+        class="ml-2 bg-blue-400 text-white px-1.5 py-2 rounded vue-tag-wrapper"
         onClick={props.onTagClicked}
       >
         <span>{name.value}</span>

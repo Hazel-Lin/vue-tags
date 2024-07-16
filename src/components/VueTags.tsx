@@ -121,8 +121,6 @@ const VueTags = defineComponent({
     const isExist = ref(false)
     const labelField = ref(props.labelField.trim())
 
-    // TODO 优化 可以自定义类名
-    const clearAllClass = 'cursor-pointer p-2.5 bg-red-500 text-white rounded border-none ml-2'
     /**
      * @description 添加标签
      * @param value 标签名称
@@ -231,9 +229,9 @@ const VueTags = defineComponent({
     }
     // 输入框组件
     const inputComponent = () => (
-      <div class="flex">
+      <div class="flex vue-tags__tagInput">
         <input
-          class="h-8"
+          class="h-8 vue-tags__tagInputField"
           ref={inputRef.value}
           type="text"
           value={inputText.value}
@@ -248,7 +246,7 @@ const VueTags = defineComponent({
         {clearAll && tagList.value.length > 0 && (
           <button
             onClick={handleClickClearAll}
-            class={clearAllClass}
+            class="cursor-pointer p-2.5 bg-red-500 text-white rounded border-none ml-2 vue-tags__clearAll"
           >
             {clearAllText}
           </button>
@@ -257,12 +255,12 @@ const VueTags = defineComponent({
     )
 
     return () => (
-      <div class="grid gap-sm">
+      <div class="grid gap-sm vue-tags-wrapper">
         {!readOnly && inputFieldPosition === INPUT_FIELD_POSITIONS.TOP && inputComponent()}
         <div class="flex gap-2">
           <div
             ref={el}
-            class="flex"
+            class="flex vue-tags-inline"
           >
             {tagList.value.map((tag: Tag, index: number) => (
               <div key={tag.id}>
@@ -270,7 +268,7 @@ const VueTags = defineComponent({
                   ? (
                     <input
                       ref={tagInputRef}
-                      class="h-8"
+                      class="h-8 vue-tags__editTagInput"
                       type="text"
                       value={newText.value}
                       onChange={handleChange}
