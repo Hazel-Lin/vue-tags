@@ -6,7 +6,7 @@ hero:
   name: Vue Tags
   text:  一个简单的 Vue 3 标签组件
   image:
-    src: /icon.jpg
+    src: /logo-with-shadow.png
     alt: Vue Tags
   actions:
     - theme: brand

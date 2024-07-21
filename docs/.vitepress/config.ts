@@ -2,8 +2,13 @@
 export default ({
   title: 'Vue Tags',
   description: 'The tag component of Vue.',
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+    ['meta', { name: 'author', content: 'Hazel Lin' }],
+    ['meta', { name: 'keywords', content: 'vue, tags, tag, component' }],
+  ],
   themeConfig: {
-    logo: '/icon.jpg',
+    logo: '/logo.svg',
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '首页', link: '/' },
