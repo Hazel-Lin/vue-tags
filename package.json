@@ -1,7 +1,7 @@
 {
   "name": "vue3-tags",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "packageManager": "pnpm@9.1.4",
   "description": "A simple tagging component for your projects",
   "author": "Hazel-Lin",
